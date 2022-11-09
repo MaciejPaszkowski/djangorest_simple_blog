@@ -1,0 +1,29 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+    - id: check-merge-conflict
+    - id: debug-statements
+    - id: no-commit-to-branch
+    - id: check-added-large-files
+    - id: check-byte-order-marker
+    - id: check-case-conflict
+    - id: check-executables-have-shebangs
+    - id: check-symlinks
+    - id: check-toml
+    - id: check-yaml
+    - id: end-of-file-fixer
+    - id: check-json
+    - id: trailing-whitespace
+      args: [--markdown-linebreak-ext=md]
+    - id: pretty-format-json
+      args: ['--indent', '4', '--no-sort-keys']
+    - id: check-ast
+    - id: check-builtin-literals
+    - id: check-docstring-first
+
+-   repo: https://github.com/PyCQA/isort
+    rev: 5.9.3
+    hooks:
+    -   id: isort
+        additional_dependencies: [toml]
