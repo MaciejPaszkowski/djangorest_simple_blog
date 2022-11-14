@@ -1,7 +1,9 @@
 import pytest
 from django.core.exceptions import ValidationError
 
-from tests.factories import PostFactory, UserFactory
+from posts.models import Category
+from tests.factories import (CategoryFactory, PostCategoryFactory, PostFactory,
+                             UserFactory)
 
 
 class TestModels:
@@ -12,7 +14,13 @@ class TestModels:
 
     def test_post_create(self):
         user = UserFactory.create()
+
+        categories = CategoryFactory.create_batch(3)
         post = PostFactory.create(author=user)
+
+        for zz in categories:
+
+            postcategories = PostCategoryFactory(category=zz, post=post)
 
         assert post.pk is not None
         assert post.author.id == user.id
@@ -22,6 +30,9 @@ class TestModels:
         assert post.title is not None
         assert post.content is not None
         assert post.created_at is not None
+
+        assert post.categories.count == 3
+        # assert post.title == ''
 
     def test_user_create(self):
 

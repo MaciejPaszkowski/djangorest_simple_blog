@@ -1,7 +1,7 @@
 import factory.fuzzy
 
 from authentication.models import User
-from posts.models import Post
+from posts.models import Category, Post, PostCategories
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -13,6 +13,14 @@ class UserFactory(factory.django.DjangoModelFactory):
     password = factory.fuzzy.FuzzyText(length=20)
 
 
+class CategoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Category
+
+    name = factory.fuzzy.FuzzyText(length=50)
+    discription = factory.fuzzy.FuzzyText(length=100)
+
+
 class PostFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Post
@@ -21,8 +29,18 @@ class PostFactory(factory.django.DjangoModelFactory):
     content = factory.fuzzy.FuzzyText(length=1000)
     title = factory.fuzzy.FuzzyText(length=100)
 
+    # @factory.post_generation
+    # def categories(self,create, extracted, **kwargs):
+    #     if not create:
+    #         return
+    #     if extracted:
+    #         for category in extracted:
+    #             self.category.add(category)
 
-# author = models.ForeignKey(User, on_delete=models.CASCADE)
-#     title=models.CharField(max_length=100)
-#     content= models.CharField(max_length=1000)
-#     created_at=models.DateTimeField(auto_now_add=True)
+
+class PostCategoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = PostCategories
+
+    post = factory.SubFactory(PostFactory)
+    category = factory.SubFactory(CategoryFactory)
