@@ -12,7 +12,7 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ["name", "discription"]
+    list_display = ["name", "description"]
 
 
 @admin.register(PostCategories)

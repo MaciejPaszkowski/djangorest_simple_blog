@@ -29,7 +29,7 @@ class TestModels:
             postcategories = PostCategoryFactory(category=zz, post=post)
 
         assert post.pk is not None
-        assert post.author.id == user.id
+        assert post.author == user
         assert post.author.username == user.username
         assert post.author.email == user.email
 
@@ -134,8 +134,9 @@ class TestModels:
         assert comment.content is not None
 
         post_has_comments = Comment.objects.filter(post=post)
-
-        assert post_has_comments[0].author == user
-        assert post_has_comments[1].author == user2
+        print(post_has_comments[0].author)
+        print(user)
+        assert post_has_comments[0].author.email == user.email
+        assert post_has_comments[1].author.email == user2.email
 
     #  assert comment.content ==''

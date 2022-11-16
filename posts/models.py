@@ -19,7 +19,7 @@ class Category(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100, null=False)
-    discription = models.CharField(max_length=200)
+    description = models.CharField(max_length=200)
 
     class Meta:
         ordering = ["name"]
@@ -30,7 +30,7 @@ class Category(models.Model):
 
 class Post(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, null=False)
     content = models.CharField(max_length=1000, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -42,7 +42,7 @@ class Post(models.Model):
         ordering = ["title"]
 
     def __str__(self):
-        return f"<Post {self.author}:{self.title}"
+        return f"<Post {self.author}:tilte:{self.title}"
 
 
 class PostCategories(models.Model):
@@ -54,6 +54,7 @@ class PostCategories(models.Model):
 
 
 class Comment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     content = models.CharField(max_length=1000, null=False)
