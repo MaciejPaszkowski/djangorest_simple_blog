@@ -1,7 +1,7 @@
 import factory.fuzzy
 
 from authentication.models import User
-from posts.models import Category, Post, PostCategories
+from posts.models import Category, Comment, Post, PostCategories
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -17,7 +17,8 @@ class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Category
 
-    name = factory.fuzzy.FuzzyText(length=50)
+    # name = factory.fuzzy.FuzzyText(length=50)
+    name = factory.Faker("first_name", locale="pl_PL")
     discription = factory.fuzzy.FuzzyText(length=100)
 
 
@@ -27,15 +28,16 @@ class PostFactory(factory.django.DjangoModelFactory):
 
     author = factory.SubFactory(UserFactory)
     content = factory.fuzzy.FuzzyText(length=1000)
-    title = factory.fuzzy.FuzzyText(length=100)
+    # title = factory.fuzzy.FuzzyText(length=100)
+    title = factory.Faker("name", locale="pl_PL")
 
-    # @factory.post_generation
-    # def categories(self,create, extracted, **kwargs):
-    #     if not create:
-    #         return
-    #     if extracted:
-    #         for category in extracted:
-    #             self.category.add(category)
+    @factory.post_generation
+    def categories(self, create, extracted, **kwargs):
+        if not create:
+            return
+        if extracted:
+            for category in extracted:
+                self.category.add(category)
 
 
 class PostCategoryFactory(factory.django.DjangoModelFactory):
@@ -44,3 +46,12 @@ class PostCategoryFactory(factory.django.DjangoModelFactory):
 
     post = factory.SubFactory(PostFactory)
     category = factory.SubFactory(CategoryFactory)
+
+
+class CommentPostFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Comment
+
+    post = factory.SubFactory(PostFactory)
+    author = factory.SubFactory(UserFactory)
+    content = factory.fuzzy.FuzzyText(length=1000)
