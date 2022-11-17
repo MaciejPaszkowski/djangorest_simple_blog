@@ -1,5 +1,4 @@
 import factory.fuzzy
-from rest_framework import serializers
 
 from authentication.models import User
 from posts.models import Category, Comment, Post, PostCategories
@@ -10,7 +9,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    id = factory.Faker("uuid4")
+    # id = factory.Faker("uuid4")
     username = factory.Faker("name", locale="pl_PL")
     email = factory.Sequence(lambda n: "person{}@emailexample.com".format(n))
     password = factory.fuzzy.FuzzyText(length=20)

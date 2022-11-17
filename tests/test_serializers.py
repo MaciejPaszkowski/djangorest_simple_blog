@@ -2,13 +2,11 @@ import pytest
 
 from posts.models import Comment, PostCategories
 from posts.serializers import (CategorySerializer, CommentSerailizer,
-                               PostCategoriesSerializer, PostSerializer,
-                               UserSerializer)
+                               PostCategoriesSerializer, PostSerializer)
 from tests.factories import (CategoryDictFactory, CategoryFactory,
                              CommentPostDictFactory, CommentPostFactory,
                              PostCategoryDictFactory, PostCategoryFactory,
-                             PostDictFactory, PostFactory, UserDictFactory,
-                             UserFactory)
+                             PostDictFactory, PostFactory, UserFactory)
 
 
 class TestSerializers:
@@ -19,6 +17,7 @@ class TestSerializers:
         data = PostDictFactory()
 
         user = UserFactory()
+        print(user.id)
 
         data["author_id"] = user.id
 
@@ -26,6 +25,7 @@ class TestSerializers:
 
         seralizer.is_valid(raise_exception=True)
         seralizer.save()
+        # assert 0==1
 
     def test_category_create_serailizer(self):
         data = CategoryDictFactory()
@@ -65,7 +65,7 @@ class TestSerializers:
         # print(comment2)
 
         post2 = PostFactory(author=user)
-        # comment3=CommentPostFactory(post=post2, author=user)
+        comment3 = CommentPostFactory(post=post2, author=user)
         data["post_id"] = post.id
 
         data["author_id"] = user.id
@@ -93,5 +93,3 @@ class TestSerializers:
 
         assert (len(post_has_comments)) == 3  # yes 3 , first from dictfactory
         assert (len(post2_has_no_comments)) == 1
-
-        assert 0 == 1

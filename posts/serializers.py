@@ -1,16 +1,12 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
+from django.contrib.auth.hashers import make_password
+from rest_framework import serializers, status
+from rest_framework.validators import ValidationError
 
+from authentication.serializers import UserSerializer
 from posts.models import Category, Comment, Post, PostCategories
 
 User = get_user_model()
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("Id", "username", "emial")
-        read_only_fields = ("email", "username", "id")
 
 
 class CategorySerializer(serializers.ModelSerializer):
