@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Post, PostCategories
+from .models import Category, Comment, Post, PostCategories
 
 # Register your models here
 
@@ -17,5 +17,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(PostCategories)
-class PostCategories(admin.ModelAdmin):
+class PostCategoriesAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
     pass

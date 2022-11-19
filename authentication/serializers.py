@@ -53,3 +53,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ("username", "email")
         read_only_fields = ("email", "username")
+
+
+class UserSmallSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "id")
+        read_only_fields = ("username", "id")
