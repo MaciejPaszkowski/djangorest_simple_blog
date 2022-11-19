@@ -20,10 +20,22 @@ class PostSerializer(serializers.ModelSerializer):
     author_id = serializers.PrimaryKeyRelatedField(
         write_only=True, queryset=User.objects.all(), source="author"
     )
+    categories = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Post
-        fields = ("author", "title", "content", "author_id")
+        fields = ["id", "author", "title", "content", "author_id", "categories"]
+
+
+class PostWriteSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+    author_id = serializers.PrimaryKeyRelatedField(
+        write_only=True, queryset=User.objects.all(), source="author"
+    )
+
+    class Meta:
+        model = Post
+        fields = ["id", "author", "title", "content", "author_id"]
 
 
 class PostCategoriesSerializer(serializers.ModelSerializer):

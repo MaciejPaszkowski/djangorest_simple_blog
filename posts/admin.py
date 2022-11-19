@@ -7,7 +7,8 @@ from .models import Category, Post, PostCategories
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ["author", "title", "content"]
+    # list_display = ["author", "title", "content", "categories"]
+    pass
 
 
 @admin.register(Category)

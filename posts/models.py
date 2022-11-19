@@ -18,14 +18,14 @@ class ModelId(models.Model):
 class Category(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=100, null=False)
+    name = models.CharField(max_length=100, null=False, unique=True)
     description = models.CharField(max_length=200)
 
     class Meta:
         ordering = ["name"]
 
     def __str__(self):
-        return f"<Category {self.name}"
+        return f"{self.name}"
 
 
 class Post(models.Model):

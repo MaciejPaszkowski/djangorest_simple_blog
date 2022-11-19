@@ -45,6 +45,7 @@ class TestSerializers:
         data["category_id"] = category.id
 
         serializer = PostCategoriesSerializer(data=data)
+
         serializer.is_valid(raise_exception=True)
         serializer.save()
         # assert 0==1
@@ -66,6 +67,7 @@ class TestSerializers:
 
         post2 = PostFactory(author=user)
         comment3 = CommentPostFactory(post=post2, author=user)
+
         data["post_id"] = post.id
 
         data["author_id"] = user.id

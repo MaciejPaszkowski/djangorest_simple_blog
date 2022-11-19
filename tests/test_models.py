@@ -44,6 +44,44 @@ class TestModels:
         assert post.categories.count() == 3
         assert post2.categories.count() == 1
 
+    def test_post_create_with_categories2(self):
+        user = UserFactory.create()
+
+        categories = CategoryFactory.create_batch(3)
+        category = CategoryFactory.create()
+        post = PostFactory.create(author=user)
+        post2 = PostFactory(author=user)
+        post3 = PostFactory(author=user)
+        post3.categories.add(category)
+        print(post3)
+
+        postcategory = PostCategoryFactory(category=category, post=post2)
+
+        for zz in categories:
+
+            postcategories = PostCategoryFactory(category=zz, post=post)
+
+        assert post.pk is not None
+        assert post.author == user
+        assert post.author.username == user.username
+        assert post.author.email == user.email
+
+        assert post.title is not None
+        assert post.content is not None
+        assert post.created_at is not None
+
+        # for zz in post.categories.all():
+        #      print(zz)
+        #      print(zz.id)
+        #      print(zz.name)
+        #      print(zz.description)             # <== how to look to many categories in post ;)
+
+        assert category.name is not None
+        assert post.categories.count() == 3
+        assert post2.categories.count() == 1
+
+        # assert 0==1
+
     def test_user_create(self):
 
         user = UserFactory.create()
