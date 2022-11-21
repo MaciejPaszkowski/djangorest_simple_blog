@@ -1,11 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, generics, status
+from django_filters import rest_framework as filters
+from rest_framework import generics, status, viewsets
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from posts.filters import CategoryFilter, CommentFilter, PostFilter
 from posts.models import Category, Comment, Post, PostCategories
 from posts.serializers import (CategorySerializer, CommentReadSerializer,
                                CommentWriteSerializer,
@@ -20,17 +22,14 @@ class HelloPostView(generics.GenericAPIView):
         return Response(data={"message": "Hello Post"}, status=status.HTTP_200_OK)
 
 
-class CategoryView(generics.GenericAPIView):
+class CategoryView(generics.ListCreateAPIView):
+
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [JWTAuthentication]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-
-    def get(self, request):
-        categories = Category.objects.all()
-        serializer = self.serializer_class(instance=categories, many=True)
-
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = CategoryFilter
 
     def post(self, request):
         data = request.data
@@ -76,17 +75,14 @@ class CategoryIdView(generics.GenericAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class PostView(generics.GenericAPIView):
+class PostView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     authentication_classes = [JWTAuthentication]
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = PostFilter
+
     queryset = Post.objects.all()
-
-    def get(self, request):
-        posts = Post.objects.all()
-        serializer = self.serializer_class(instance=posts, many=True)
-
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     def _serialize_category(self, serializer_data, category_pre):
         data = {}
@@ -197,19 +193,13 @@ class PostIdView(generics.GenericAPIView):
         return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CommentView(generics.GenericAPIView):
+class CommentView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [JWTAuthentication]
     queryset = Comment.objects.all()
     serializer_class = CommentReadSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ["content"]
-
-    def get(self, request):
-        comments = Comment.objects.all()
-        serializer = self.serializer_class(instance=comments, many=True)
-
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = CommentFilter
 
     def post(self, request):
         data = request.data
@@ -233,6 +223,13 @@ class CommentView(generics.GenericAPIView):
 
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CommentOnlyView(generics.ListAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentReadSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = CommentFilter
 
 
 class CommentIdView(generics.GenericAPIView):

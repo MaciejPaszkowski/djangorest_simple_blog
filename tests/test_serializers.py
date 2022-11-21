@@ -1,7 +1,8 @@
 import pytest
 
 from posts.models import Comment, PostCategories
-from posts.serializers import (CategorySerializer, CommentSerailizer,
+from posts.serializers import (CategorySerializer, CommentReadSerializer,
+                               CommentWriteSerializer,
                                PostCategoriesSerializer, PostSerializer)
 from tests.factories import (CategoryDictFactory, CategoryFactory,
                              CommentPostDictFactory, CommentPostFactory,
@@ -77,7 +78,7 @@ class TestSerializers:
         # print("____________________")
         # print(data)
 
-        serializer = CommentSerailizer(data=data)
+        serializer = CommentWriteSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 

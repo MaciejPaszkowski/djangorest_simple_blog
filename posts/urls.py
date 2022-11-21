@@ -13,4 +13,5 @@ urlpatterns = [
     ),
     path("comments/", views.CommentView.as_view(), name="comments"),
     path("comments/<uuid:id>/", views.CommentIdView.as_view(), name="comment"),
+    path("onlycomments/", views.CommentOnlyView.as_view(), name="only_comment"),
 ]
