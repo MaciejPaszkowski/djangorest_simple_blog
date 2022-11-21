@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "posts.apps.PostsConfig",
     "rest_framework",
     "django_filters",
+    "drf_yasg",
 ]
 
 REST_FRAMEWORK = {

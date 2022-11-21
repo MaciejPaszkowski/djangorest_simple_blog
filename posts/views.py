@@ -1,15 +1,18 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status, viewsets
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from authentication.models import User
 from posts.filters import CategoryFilter, CommentFilter, PostFilter
 from posts.models import Category, Comment, Post, PostCategories
 from posts.serializers import (CategorySerializer, CommentReadSerializer,
+                               CommentWriteNoAuthorSerializer,
                                CommentWriteSerializer,
                                PostCategoriesSerializer, PostSerializer,
                                PostSmallSerializer, PostWriteSerializer)
@@ -31,6 +34,7 @@ class CategoryView(generics.ListCreateAPIView):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = CategoryFilter
 
+    # @swagger_auto_schema(operation_summary="Create a post")
     def post(self, request):
         data = request.data
 
@@ -143,6 +147,14 @@ class PostIdView(generics.GenericAPIView):
     serializer_class = PostSerializer
     authentication_classes = [JWTAuthentication]
 
+    def _serialize_category(self, serializer_data, category_pre):
+        data = {}
+        data["post_id"] = serializer_data["id"]
+        data["category_id"] = category_pre.id
+        serializer_category = PostCategoriesSerializer(data=data)
+        if serializer_category.is_valid():
+            serializer_category.save()
+
     def get(self, request, id):
         print("jestesmy_w get")
         post = get_object_or_404(Post, pk=id)
@@ -167,13 +179,33 @@ class PostIdView(generics.GenericAPIView):
             data2 = {}
 
         post = get_object_or_404(Post, pk=id)
-
         serializer = PostWriteSerializer(instance=post, data=data2)
 
         if (
             serializer.is_valid() and post.author_id == user.id
         ):  # another user cannot change
             serializer.save()
+
+            if "categories" in data:
+
+                data2["categories"] = data["categories"]
+                category_pre = None
+
+                for category in data["categories"]:
+                    if isinstance(category, dict):
+                        category_pre = Category.objects.filter(
+                            name=category["name"]
+                        ).first()
+                    elif isinstance(category, str):
+                        print("category:", category)
+                        category_pre = Category.objects.filter(name=category).first()
+
+                    if category_pre:
+                        self._serialize_category(
+                            serializer_data=serializer.data,
+                            category_pre=category_pre,
+                        )
+                        category_pre = None
 
             return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -194,7 +226,7 @@ class PostIdView(generics.GenericAPIView):
 
 
 class CommentView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [JWTAuthentication]
     queryset = Comment.objects.all()
     serializer_class = CommentReadSerializer
@@ -204,18 +236,26 @@ class CommentView(generics.ListCreateAPIView):
     def post(self, request):
         data = request.data
         user = request.user
+        print(user)
+        print(data)
 
         if "post_id" in data.keys() and "content" in data.keys():
 
             data2 = {
                 "post_id": data["post_id"],
                 "content": data["content"],
-                "author_id": user.id,
             }
+
         else:
             data2 = {}
 
-        serializer = CommentWriteSerializer(data=data2)
+        if user.id:
+            data2["author_id"] = user.id
+            serializer = CommentWriteSerializer(data=data2)
+
+        else:
+            data2["author_id"] = None
+            serializer = CommentWriteNoAuthorSerializer(data=data2)
 
         if serializer.is_valid():
             serializer.save()

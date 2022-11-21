@@ -83,6 +83,17 @@ class CommentWriteSerializer(serializers.ModelSerializer):
         fields = ["post_id", "author_id", "content", "id"]
 
 
+class CommentWriteNoAuthorSerializer(serializers.ModelSerializer):
+    # post=PostSerializer()
+    post_id = serializers.PrimaryKeyRelatedField(
+        write_only=True, queryset=Post.objects.all(), source="post"
+    )
+
+    class Meta:
+        model = Comment
+        fields = ["post_id", "content", "id"]
+
+
 class CommentReadSerializer(serializers.ModelSerializer):
     post = PostSmallSerializer()
     # post_id = serializers.PrimaryKeyRelatedField(
