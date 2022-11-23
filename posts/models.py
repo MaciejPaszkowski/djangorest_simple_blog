@@ -42,7 +42,7 @@ class Post(models.Model):
         ordering = ["title"]
 
     def __str__(self):
-        return f"<Post {self.author}:tilte:{self.title}"
+        return f"<Post {self.author}:tilte:{self.title}>"
 
 
 class PostCategories(models.Model):
@@ -50,7 +50,7 @@ class PostCategories(models.Model):
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
 
     def __str__(self):
-        return f"<PostCategories {self.post.title} / {self.category.name}"
+        return f"<PostCategories {self.post.title} / {self.category.name}>"
 
 
 class Comment(models.Model):
@@ -60,4 +60,4 @@ class Comment(models.Model):
     content = models.CharField(max_length=1000, null=False)
 
     def __str__(self):
-        return f"<Comment {self.post.title} / {self.content}"
+        return f"<Comment {self.post.title} / {self.content}>"

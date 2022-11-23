@@ -17,7 +17,7 @@ from posts.serializers import (CategorySerializer, CommentReadSerializer,
                                PostCategoriesSerializer, PostSerializer,
                                PostSmallSerializer, PostWriteSerializer)
 
-User = get_user_model
+# User = get_user_model
 
 # Create your views here.
 class HelloPostView(generics.GenericAPIView):
@@ -156,9 +156,7 @@ class PostIdView(generics.GenericAPIView):
             serializer_category.save()
 
     def get(self, request, id):
-        print("jestesmy_w get")
         post = get_object_or_404(Post, pk=id)
-        print(post)
         serializer = self.serializer_class(instance=post)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -343,11 +341,18 @@ class CommentByPost(generics.GenericAPIView):
 
 class PostByUser(generics.GenericAPIView):
     serializer_class = PostSmallSerializer
-    # permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     # authentication_classes = [JWTAuthentication]
 
+    # def get_queryset(self):
+    #     user = get_object_or_404(User, pk=id)
+
+    #     return Post.objects.filter(author=user)
+    queryset = []
+
     def get(self, request, id):  # user id (int)
-        user = User.objects.filter(pk=id)
+
+        user = get_object_or_404(User, pk=str(id))
 
         posts = Post.objects.filter(author=user)
 
@@ -358,11 +363,21 @@ class PostByUser(generics.GenericAPIView):
 
 class PostByCategory(generics.GenericAPIView):
     serializer_class = PostSmallSerializer
+    queryset = []
 
-    def get(self, request, id):
-        category = Category.objects.filter(pk=id)
-        # postscategory=PostCategories.objects.filter(category=category)
+    def get(self, request, name_id):
+
+        # posts=[]
+
+        category = get_object_or_404(Category, name=name_id)
+
+        # postcategory=PostCategories.objects.filter(category=category)
+
+        # for post in postcategory:
+        #     posts.append(post.post)
 
         category_posts = category.post_categories.all()
-        serializer = self.serializer_claa(isinstance=category_posts, many=True)
+        print(category_posts)
+        serializer = self.serializer_class(instance=category_posts, many=True)
+        # serializer = self.serializer_class(instance=posts, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)

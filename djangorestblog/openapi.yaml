@@ -1,0 +1,629 @@
+openapi: 3.0.3
+info:
+  title: Django Rest Blog API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api/post
+tags:
+  - name: auth
+  - name: Category
+  - name: Comments
+paths:
+  /auth:
+    get:
+      summary: Return Hello from Auth
+      tags:
+        - auth
+      responses:
+        200:
+          description: Hello from Auth
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  key:
+                    type: string
+                  msg:
+                    type: string
+  /auth/signup:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Signup"
+      responses:
+        201:
+          description: New User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Signup"
+  /auth/token:
+    post:
+      description: Email + password to login and get token keys
+      summary: Email + password to login and get token keys
+      tags:
+      - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Token"
+      responses:
+        200:
+          description: Login and Token keys created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenOutput"
+        400:
+          description:  fields  required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        401:
+          $ref: "#/components/responses/401"
+  /auth/token/refresh:
+    post:
+      summary: Refresh Token
+      description: Refresh Token
+      tags:
+      - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TokenRefresh"
+      responses:
+        200:
+          description: New User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenRefreshOutput"
+        401:
+          $ref: "#/components/responses/401"
+        400:
+          description:  refresh  field is required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /categories:
+    get:
+      summary: Get all categories
+      description: Get all categories
+      tags:
+      - Categories
+      responses:
+        200:
+          description: Categories response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+        401:
+          $ref: "#/components/responses/401"
+    post:
+      summary: Add new Category
+      description: Add new Categories
+      tags:
+        - Categories
+      requestBody:
+        description: Category object that needs to be stored
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryWrite"
+        required: true
+      responses:
+        201:
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+        400:
+          description:  category with this name already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        401:
+          $ref: "#/components/responses/401"
+  /categories/{id}:
+    parameters:
+      - name: id
+        in: path
+        description: Category id
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      description: Get Category with id
+      summary: Get Category with id
+      tags:
+      - Categories
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        404:
+          $ref: "#/components/responses/404"
+        default:
+          $ref: "#/components/responses/DefaultErrorResponse"
+    put:
+      description: Replace an existing category
+      operationId: replaceCategory
+      tags:
+        - Categories
+      requestBody:
+        description: Category object that needs to be stored
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryWrite"
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+    delete:
+      description: Delete existing Category
+
+  /posts:
+    get:
+      summary: Get all posts
+      description: Get all posts
+      tags:
+      - Posts
+      responses:
+          200:
+            description: Posts response
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Post"
+          401:
+            $ref: "#/components/responses/401"
+          default:
+            $ref: "#/components/responses/DefaultErrorResponse"
+    post:
+      summary: Add new Post
+      description: Add new Post
+      tags:
+        - Posts
+      requestBody:
+        description: Post object that needs to be stored
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostWrite"
+        required: true
+      responses:
+        201:
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        401:
+          $ref: "#/components/responses/401"
+        default:
+          $ref: "#/components/responses/DefaultErrorResponse"
+  /posts/{id}:
+    parameters:
+      - name: id
+        in: path
+        description: Post id
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      description: Get Post with id
+      summary: Get Post with id
+      tags:
+      - Posts
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        404:
+          $ref: "#/components/responses/404"
+        default:
+          $ref: "#/components/responses/DefaultErrorResponse"
+    put:
+      description: Replace an existing post
+      operationId: replacePost
+      tags:
+        - Posts
+      requestBody:
+        description: Post object that needs to be stored
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostWrite"
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+  /comments:
+    get:
+      summary: Get all comments
+      description: Get all comments
+      tags:
+      - Comments
+      responses:
+          200:
+            description: Comments response
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Comment"
+          401:
+            $ref: "#/components/responses/401"
+          default:
+            $ref: "#/components/responses/DefaultErrorResponse"
+    post:
+      summary: Create new comment
+      description: Create new comment
+      tags:
+        - Comments
+      requestBody:
+        description: Comment object that needs to be stored
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentWrite"
+        required: true
+      responses:
+        201:
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommentCreate"
+        default:
+          $ref: "#/components/responses/DefaultErrorResponse"
+  /commnets{id}:
+    parameters:
+      - name: id
+        in: path
+        description: Post id
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      description: Get comment with id
+      summary: Get comment with id
+      tags:
+      - Comments
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+        404:
+          $ref: "#/components/responses/404"
+        default:
+          $ref: "#/components/responses/DefaultErrorResponse"
+    put:
+      description: Replace an existing comment
+      operationId: replaceComment
+      tags:
+        - Comments
+      requestBody:
+        description: Comment object that needs to be stored
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentWrite"
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+  /posts/{id}/comments:
+    parameters:
+      - name: id
+        in: path
+        description: Comment id
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      description: Get all comments from post {id}
+      summary: Get all comments from post {id}
+      tags:
+      - Comments
+      - Posts
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Comment"
+        404:
+          $ref: "#/components/responses/404"
+        default:
+          $ref: "#/components/responses/DefaultErrorResponse"
+  /posts/category/{name}:
+    parameters:
+      - name: name
+        in: path
+        description: Comment name
+        required: true
+        schema:
+          type: string
+    get:
+      description: Get all posts from category name
+      summary: Get all posts from category name
+      tags:
+      - Categories
+      - Posts
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/PostSmall"
+        404:
+          $ref: "#/components/responses/404"
+        default:
+          $ref: "#/components/responses/DefaultErrorResponse"
+  /authors/{id}/posts:
+    parameters:
+      - name: id
+        in: path
+        description: Author id
+        required: true
+        schema:
+          type: integer
+    get:
+      description: Get all posts from author {id}
+      summary: Get all posts from author {id}
+      tags:
+      - Posts
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/PostSmall"
+        default:
+          $ref: "#/components/responses/DefaultErrorResponse"
+components:
+  schemas:
+    GenericError:
+      type: array
+      items:
+        type: object
+        properties:
+          key:
+            type: string
+          msg:
+            type: string
+    Signup:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    Token:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    TokenOutput:
+      type: object
+      properties:
+        refresh:
+          type: string
+        access:
+          type: string
+    TokenRefresh:
+      type: object
+      properties:
+        refresh:
+          type: string
+    TokenRefreshOutput:
+      type: object
+      properties:
+        access:
+          type: string
+    Author:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+    AuthorSmall:
+      type: object
+      properties:
+        username:
+          type: string
+        id:
+          type: integer
+    Category:
+      type: object
+      properties:
+        id:
+         type: string
+         format: uuid
+        name:
+          type: string
+        description:
+          type: string
+    CategoryWrite:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    Post:
+      type: object
+      properties:
+        id:
+         type: string
+         format: uuid
+        author:
+          $ref: "#/components/schemas/Author"
+        title:
+          type: string
+        content:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+    PostSmall:
+      type: object
+      properties:
+        id:
+         type: string
+         format: uuid
+        author:
+          $ref: "#/components/schemas/AuthorSmall"
+        title:
+          type: string
+    PostCategoriesDict:
+      type: object
+      properties:
+        name:
+          type: string
+    PostWrite:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        categories:
+          type: array
+          items:
+            oneOf:
+              - type: string
+              - $ref: "#/components/schemas/PostCategoriesDict"
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        author:
+          $ref: "#/components/schemas/AuthorSmall"
+          nullable: true
+        post:
+          $ref: "#/components/schemas/PostSmall"
+    CommentWrite:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        content:
+          type: string
+    CommentCreate:
+      type: object
+      properties:
+        post_id:
+          type: string
+          format: uuid
+        content:
+          type: string
+  responses:
+    "DefaultErrorResponse":
+      description: Generic Error Response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GenericError"
+    "400":
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GenericError"
+    "401":
+      description: Unathorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GenericError"
+    "403":
+      description: Forbriden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GenericError"
+    "404":
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GenericError"
