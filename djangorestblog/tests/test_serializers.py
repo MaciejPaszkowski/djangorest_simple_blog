@@ -1,5 +1,4 @@
 import pytest
-
 from posts.models import Comment, PostCategories
 from posts.serializers import (CategorySerializer, CommentReadSerializer,
                                CommentWriteSerializer,

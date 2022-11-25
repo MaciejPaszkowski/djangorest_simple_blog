@@ -1,5 +1,4 @@
 import django_filters
-
 from posts.models import Category, Comment, Post
 
 

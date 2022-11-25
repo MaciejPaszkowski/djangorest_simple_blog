@@ -14,11 +14,11 @@ class HelloAuthView(generics.GenericAPIView):
 class UserCreateView(generics.GenericAPIView):
 
     serializer_class = UserCreationSerializer
-    print(serializer_class)
+    # print(serializer_class)
 
     def post(self, request):
         data = request.data
-        print(data)
+        # print(data)
 
         serializer = self.serializer_class(data=data)
 

@@ -2,10 +2,9 @@ import uuid
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
+from posts.models import Category, Comment, Post, PostCategories
 from rest_framework import serializers, status
 from rest_framework.validators import ValidationError
-
-from posts.models import Category, Comment, Post, PostCategories
 
 User = get_user_model()
 

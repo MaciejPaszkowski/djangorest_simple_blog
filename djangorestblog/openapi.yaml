@@ -6,8 +6,9 @@ servers:
   - url: http://localhost:8000/api/post
 tags:
   - name: auth
-  - name: Category
+  - name: Categories
   - name: Comments
+  - name: Posts
 paths:
   /auth:
     get:
@@ -28,6 +29,8 @@ paths:
                     type: string
   /auth/signup:
     post:
+      tags:
+        - auth
       requestBody:
         required: true
         content:
@@ -189,7 +192,13 @@ paths:
         401:
           $ref: "#/components/responses/401"
     delete:
-      description: Delete existing Category
+      operationId: deleteCategory
+      tags:
+        - Categories
+      responses:
+        201:
+          description: Category deleted
+
 
   /posts:
     get:
@@ -281,6 +290,13 @@ paths:
           $ref: "#/components/responses/400"
         401:
           $ref: "#/components/responses/401"
+    delete:
+      operationId: deletePost
+      tags:
+        - Posts
+      responses:
+        201:
+          description: Post deleted
   /comments:
     get:
       summary: Get all comments
@@ -369,6 +385,13 @@ paths:
           $ref: "#/components/responses/400"
         401:
           $ref: "#/components/responses/401"
+    delete:
+      operationId: deleteComment
+      tags:
+        - Comments
+      responses:
+        201:
+          description: Comments deleted
   /posts/{id}/comments:
     parameters:
       - name: id

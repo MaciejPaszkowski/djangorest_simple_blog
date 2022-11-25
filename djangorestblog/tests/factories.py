@@ -1,5 +1,4 @@
 import factory.fuzzy
-
 from authentication.models import User
 from posts.models import Category, Comment, Post, PostCategories
 from tests.factories_helper import create_dict_factory

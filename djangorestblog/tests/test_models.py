@@ -1,6 +1,5 @@
 import pytest
 from django.core.exceptions import ValidationError
-
 from posts.models import Category, Comment, PostCategories
 from tests.factories import (CategoryFactory, CommentPostFactory,
                              PostCategoryFactory, PostFactory, UserFactory)
