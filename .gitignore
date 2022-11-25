@@ -1,0 +1,15 @@
+# JetBrains
+/.idea
+env
+__pycache__
+*.mo
+
+#Coverage
+.coverage
+
+# Misc
+.env
+
+#pipenv
+Pipfile
+Pipfile.lock
