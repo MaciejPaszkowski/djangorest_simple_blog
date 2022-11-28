@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     "authentication.apps.AuthenticationConfig",
     "posts.apps.PostsConfig",
     "rest_framework",
+    "drf_spectacular",
     "django_filters",
     "data_loaders.apps.DataLoadersConfig",
 ]
@@ -46,6 +48,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SIMPLE_JWT = {
@@ -73,7 +76,7 @@ ROOT_URLCONF = "urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -101,6 +104,15 @@ DATABASES = {
         "HOST": env("BLOG_DB_HOST", default="localhost"),
         "PORT": env("BLOG_DB_PORT", default="5432"),
     }
+}
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "api_key": {"type": "apiKey", "in": "header", "name": "Token Authorization"}
+    },
+    "USE_SESSION_AUTH": False,
+    "JSON_EDITOR": True,
+    "SUPPORTED_SUBMIT_METHODS": ["get", "post", "put", "delete"],
 }
 
 AUTH_USER_MODEL = "authentication.User"
