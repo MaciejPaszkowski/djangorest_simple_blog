@@ -49,6 +49,7 @@ class CategoryIdView(generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = CategorySerializer
     authentication_classes = [JWTAuthentication]
+    queryset = []
 
     def get(self, request, id):
 
@@ -144,6 +145,7 @@ class PostIdView(generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     authentication_classes = [JWTAuthentication]
+    queryset = []
 
     def _serialize_category(self, serializer_data, category_pre):
         data = {}
@@ -272,6 +274,7 @@ class CommentIdView(generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = CommentWriteSerializer
     authentication_classes = [JWTAuthentication]
+    queryset = []
 
     def get(self, request, id):
         comment = get_object_or_404(Comment, pk=id)
@@ -325,6 +328,7 @@ class CommentByPost(generics.GenericAPIView):
     serializer_class = CommentReadSerializer
     # permission_classes = [IsAuthenticatedOrReadOnly]
     # authentication_classes = [JWTAuthentication]
+    queryset = []
 
     def get(self, request, id):
 

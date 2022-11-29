@@ -4,7 +4,7 @@ A list of all environment variables required to run application is stored in '.e
 After filing in correct values, environment variables can be loaded by updating environment with values from file with:
 `set -o allexport; . .env; set +o allexport'
 
-# Not implementet yet
+### Not implementet yet
 ## Production
 
 ### 1. Running db migrations
@@ -47,3 +47,7 @@ set -o allexport; . .env; set +o allexport
 ```
 shovel run_api_dev
 ```
+
+
+# SWAGGER API:
+0.0.0.0:8000/swagger-ui

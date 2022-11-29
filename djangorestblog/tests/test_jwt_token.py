@@ -4,8 +4,8 @@ from authentication.views import UserCreateView
 from rest_framework.test import APITestCase
 from settings import API_URI_PREFIX
 
-CREATE_USER_VIEW = API_URI_PREFIX + "/post/auth/signup/"
-GET_TOKEN = API_URI_PREFIX + "/post/auth/token/"
+CREATE_USER_VIEW = API_URI_PREFIX + "/post/auth/signup"
+GET_TOKEN = API_URI_PREFIX + "/post/auth/token"
 
 
 class ApiTestCaseAuth(object):
